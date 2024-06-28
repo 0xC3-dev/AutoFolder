@@ -2,7 +2,7 @@
 
 int main()
 {
-    // Declare and initalize the Console class object. Pass the values to the constructor var members.
+    // Declare and initialize the Console class object. Pass the values to the constructor var members.
     Utils::Console* console = new Utils::Console(vec2_t((float)GetSystemMetrics(SM_CXSCREEN), (float)GetSystemMetrics(SM_CYSCREEN)));
 
     console->CalculateConsolePos(console->m_vScreenSize, console->m_vConsoleCalcSize, console->m_vConsolePos);

@@ -8,7 +8,7 @@ Automate opening Folders for a smoother workspace
 * ```Character Set: Use Multi-Byte Character Set```
 * ```Optimizations have been enabled with the preset of favoring speed```
 
-## UPDATE
+## Changelog
 * UPDATE #1 | 06/27/24 : Initial release.
 * UPDATE #2 | 06/28/24 : Refactored Console::Pause(); to Console::Exit();. Updated Console::CheckSuccess(); first param to take in proper function and handle return value. Cleaned up codebase.
 
