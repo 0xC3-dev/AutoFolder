@@ -8,7 +8,7 @@ namespace Utils
         m_vScreenSize.y = screenSize.y;
     };
 
-    void Console::Pause(BOOL exitState)
+    void Console::Exit(BOOL exitState)
     {
         system("pause");
         if (exitState)
@@ -33,17 +33,18 @@ namespace Utils
         printf(text);
     }
 
-    __inline void Console::CheckSuccess(int success, const char* errorMsg, const char* successMsg)
+    __inline void Console::CheckSuccess(std::function<int()> fn, const char* errorMsg, const char* successMsg)
     {
-        if (success == 0)
+        if (!fn())
         {
             Console::Log(errorMsg);
-            Console::Pause(TRUE);
+            Console::Exit(TRUE);
         }
         else
         {
             Console::Log(successMsg);
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     };
 
     void Console::CalculateConsolePos(vec2_t& screenSize, vec2_t& consoleCalcSize, vec2_t& consolePos)
@@ -54,10 +55,15 @@ namespace Utils
 
     void Console::SetConsoleInfo(const char* consoleName, vec2_t& consolePos, vec2_t& consoleTrueSize, BOOL showWindow)
     {
+        constexpr const char* ofSucMsg = "[ INFO ]: Successfully changed console title.\n\n";
+        constexpr const char* ofErrMsg = "[ ERROR ]: Failed to change console title.\n\n";
+        constexpr const char* ffSucMsg = "[ INFO ]: Successfully moved console window.\n\n";
+        constexpr const char* ffErrMsg = "[ ERROR ]: Failed to move console window.\n\n";
+
         HWND hWnd;
         hWnd = GetConsoleWindow();
-        Console::CheckSuccess(SetConsoleTitleA(consoleName), "[ ERROR ]: Failed to change console title.\n\n", "[ INFO ]: Successfully changed console title.\n\n");
-        Console::CheckSuccess(MoveWindow(hWnd, (int)consolePos.x, (int)consolePos.y, (int)consoleTrueSize.x, (int)consoleTrueSize.y, TRUE), "[ ERROR ]: Failed to move console window.\n\n", "[ INFO ]: Successfully moved console window.\n\n");
+        Console::CheckSuccess([&]() { return SetConsoleTitleA(consoleName); }, ofErrMsg, ofSucMsg);
+        Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)consolePos.x, (int)consolePos.y, (int)consoleTrueSize.x, (int)consoleTrueSize.y, TRUE); }, ffErrMsg, ffSucMsg);
         if (showWindow)
         {
             ShowWindow(hWnd, TRUE);
@@ -68,8 +74,11 @@ namespace Utils
         }
     }
 
-    void Console::MoveWindowWrapper(int currentFolder, int sideSelection[7], HWND hWnd, vec2_t screenSize, vec2_t folderSize, vec2_t folderPos, BOOL bRepaint)
+    void Console::MoveWindowWrapper(int currentFolder, HWND hWnd, vec2_t screenSize, vec2_t folderSize, vec2_t folderPos, BOOL bRepaint)
     {
+        constexpr const char* errorMsg = "[ ERROR ]: Failed to move folder window.\n\n";
+        constexpr const char* successMsg = "[ INFO ]: Successfully moved folder window.\n\n";
+
         vec2_t vFolderPosRightSide = { 0, 0 };
 
         vFolderPosRightSide.x = screenSize.x - folderSize.x;
@@ -81,40 +90,46 @@ namespace Utils
         switch (currentFolder)
         {
         case 0:
-            Console::CheckSuccess(MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint), "[ ERROR ]: Failed to move folder window.\n\n", "[ INFO ]: Successfully moved folder window.\n\n");
+            Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint); }, errorMsg, successMsg);
             break;
         case 1:
-            Console::CheckSuccess(MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint), "[ ERROR ]: Failed to move folder window.\n\n", "[ INFO ]: Successfully moved folder window.\n\n");
+            Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint); }, errorMsg, successMsg);
             break;
         case 2:
-            Console::CheckSuccess(MoveWindow(hWnd, (int)vFolderPosRightSide.x, (int)vFolderPosRightSide.y, (int)folderSize.x, (int)folderSize.y, bRepaint), "[ ERROR ]: Failed to move folder window.\n\n", "[ INFO ]: Successfully moved folder window.\n\n");
+            Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)vFolderPosRightSide.x, (int)vFolderPosRightSide.y, (int)folderSize.x, (int)folderSize.y, bRepaint); }, errorMsg, successMsg);
             break;
         case 3:
-            Console::CheckSuccess(MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint), "[ ERROR ]: Failed to move folder window.\n\n", "[ INFO ]: Successfully moved folder window.\n\n");
+            Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint); }, errorMsg, successMsg);
             break;
         case 4:
-            Console::CheckSuccess(MoveWindow(hWnd, (int)vFolderPosRightSide.x, (int)vFolderPosRightSide.y, (int)folderSize.x, (int)folderSize.y, bRepaint), "[ ERROR ]: Failed to move folder window.\n\n", "[ INFO ]: Successfully moved folder window.\n\n");
+            Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)vFolderPosRightSide.x, (int)vFolderPosRightSide.y, (int)folderSize.x, (int)folderSize.y, bRepaint); }, errorMsg, successMsg);
             break;
         case 5:
-            Console::CheckSuccess(MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint), "[ ERROR ]: Failed to move folder window.\n\n", "[ INFO ]: Successfully moved folder window.\n\n");
+            Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)folderPos.x, (int)folderPos.y, (int)folderSize.x, (int)folderSize.y, bRepaint); }, errorMsg, successMsg);
             break;
         case 6:
-            Console::CheckSuccess(MoveWindow(hWnd, (int)vFolderPosRightSide.x, (int)vFolderPosRightSide.y, (int)folderSize.x, (int)folderSize.y, bRepaint), "[ ERROR ]: Failed to move folder window.\n\n", "[ INFO ]: Successfully moved folder window.\n\n");
+            Console::CheckSuccess([&]() { return MoveWindow(hWnd, (int)vFolderPosRightSide.x, (int)vFolderPosRightSide.y, (int)folderSize.x, (int)folderSize.y, bRepaint); }, errorMsg, successMsg);
             break;
         }
     }
 
-    void Console::OpenFolders(int folderAmount, int sideSelection[7], const char* folderName[7], const char* folderPath[7], vec2_t& screenSize, vec2_t& folderSize, vec2_t& folderPos)
+    void Console::OpenFolders(int folderAmount, const char* folderName[7], const char* folderPath[7], vec2_t& screenSize, vec2_t& folderSize, vec2_t& folderPos)
     {
+        constexpr const char* ofSucMsg = "[ INFO ]: Successfully opened folder window.\n\n";
+        constexpr const char* ofErrMsg = "[ ERROR ]: Failed to open folder window.\n\n";
+        constexpr const char* ffSucMsg = "[ INFO ]: Successfully found folder window.\n\n";
+        constexpr const char* ffErrMsg = "[ ERROR ]: Failed to find folder window.\n\n";
+
         for (int i = 0; i < folderAmount; i++)
         {
-            Console::CheckSuccess(system(folderPath[i]), "[ ERROR ]: Failed to open folder window.\n\n", "[ INFO ]: Successfully opened folder window.\n\n");
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            Console::CheckSuccess([&]() { return system(folderPath[i]); }, ofErrMsg, ofSucMsg);
             HWND hWnd;
             hWnd = FindWindowA(NULL, folderName[i]);
-            Console::CheckSuccess((int)FindWindowA(NULL, folderName[i]), "[ ERROR ]: Failed to find folder window.\n\n", "[ INFO ]: Successfully found folder window.\n\n");
-            Console::MoveWindowWrapper(i, sideSelection, hWnd, screenSize, folderSize, folderPos, TRUE);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            Console::CheckSuccess([&]() {
+                hWnd = FindWindowA(NULL, folderName[i]);
+                return (int)hWnd; 
+                }, ffErrMsg, ffSucMsg);
+            Console::MoveWindowWrapper(i, hWnd, screenSize, folderSize, folderPos, TRUE);
         }
 
         Console::Log("[ INFO ]: Successfully opened all Folders.\n\n");

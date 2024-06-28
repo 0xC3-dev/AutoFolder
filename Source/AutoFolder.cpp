@@ -7,5 +7,5 @@ int main()
 
     console->CalculateConsolePos(console->m_vScreenSize, console->m_vConsoleCalcSize, console->m_vConsolePos);
     console->SetConsoleInfo("Auto Folder", console->m_vConsolePos, console->m_vConsoleTrueSize, TRUE);
-    console->OpenFolders(7, console->m_iSideSelection, console->m_cFolderName, console->m_cFolderPath, console->m_vScreenSize, console->m_vFolderSize, console->m_vFolderPos);
+    console->OpenFolders(7, console->m_cFolderName, console->m_cFolderPath, console->m_vScreenSize, console->m_vFolderSize, console->m_vFolderPos);
 }
