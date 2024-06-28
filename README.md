@@ -10,6 +10,7 @@ Automate opening Folders for a smoother workspace
 
 ## UPDATE
 * UPDATE #1 | 06/27/24 : Initial release.
+* UPDATE #2 | 06/28/24 : Refactored Console::Pause(); to Console::Exit();. Updated Console::CheckSuccess(); first param to take in proper function and handle return value. Cleaned up codebase.
 
 ## TODO
 * GUI: Add a graphical user interface for a sleeker look.
